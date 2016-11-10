@@ -1,14 +1,9 @@
 class mysql {
-  exec { "apt-get update":
-    path => "/usr/bin",
-  }
   package { "mysql-server-5.7":
     ensure => present,
-    require => Exec["apt-get update"],
   }
   package { "mysql-client-5.7":
     ensure => present,
-    require => Exec["apt-get update"],
   }
   service { "mysql":
     ensure => running,
@@ -21,8 +16,8 @@ class mysql {
     require => Service["mysql"],
   }
   exec { "create-mysql-database":
-    unless => "/usr/bin/mysql -uszkodnik -pszkodnik cuphalfe_d7",
-    command => "/usr/bin/mysql -uroot -proot -e \"create database cuphalfe_d7; grant all on cuphalfe_d7.* to szkodnik@localhost identified by 'szkodnik';\"",
+    unless => "/usr/bin/mysql -umy_user -pmy_user my_db",
+    command => "/usr/bin/mysql -uroot -proot -e \"create database my_db; grant all on my_db.* to my_user@'%' identified by 'my_user';\"",
     require => Service["mysql"],
   }
 }
