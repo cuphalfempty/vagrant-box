@@ -49,6 +49,13 @@ class apache {
   }
 }
 
+class tools {
+  package { "vim":
+    ensure => present,
+  }
+}
+
 include mysql
-include apache
 include php
+include apache
+include tools
