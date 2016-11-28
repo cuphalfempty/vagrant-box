@@ -1,13 +1,13 @@
 class mysql {
-  package { "mysql-server-5.7":
+  package { "mysql-server-5.5":
     ensure => present,
   }
-  package { "mysql-client-5.7":
+  package { "mysql-client-5.5":
     ensure => present,
   }
   service { "mysql":
     ensure => running,
-    require => Package["mysql-server-5.7"],
+    require => Package["mysql-server-5.5"],
   }
   exec { "set-mysql-password":
     unless => "mysql -uroot -proot",
@@ -23,15 +23,15 @@ class mysql {
 }
 
 class php {
-  package { "php7.0":
+  package { "php5":
     ensure => present,
   }
-  package { "php7.0-cli":
+  package { "php5-cli":
     ensure => present,
   }
-  package { "php7.0-mysql":
+  package { "php5-mysql":
     ensure => present,
-    require => Package["mysql-server-5.7", "php7.0"],
+    require => Package["mysql-server-5.5", "php5"],
   }
 }
 
@@ -39,7 +39,7 @@ class apache {
   package { "apache2":
     ensure => present,
   }
-  package { "libapache2-mod-php7.0":
+  package { "libapache2-mod-php5":
     ensure => present,
     require => Package["apache2"],
   }
