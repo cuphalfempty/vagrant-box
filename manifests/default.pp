@@ -15,10 +15,14 @@ class mysql {
     command => "mysqladmin -uroot password root",
     require => Service["mysql"],
   }
-  exec { "create-mysql-database":
-    unless => "/usr/bin/mysql -umy_user -pmy_user my_db",
-    command => "/usr/bin/mysql -uroot -proot -e \"create database my_db; grant all on my_db.* to my_user@'%' identified by 'my_user';\"",
-    require => Service["mysql"],
+  file { 'user/.my.cnf':
+    ensure => present,
+    content => "[client]\nuser=root\npassword=root\n",
+    path => '/home/vagrant/.my.cnf',
+    require => Package['mysql-server-5.5'],
+    mode => 0644,
+    owner => 'vagrant',
+    group => 'vagrant',
   }
 }
 
@@ -46,6 +50,20 @@ class apache {
   service { "apache2":
     ensure => running,
     require => Package["apache2"],
+  }
+  exec { "apache-en-rewrite":
+    path => ["/bin", "/usr/bin"],
+    command => "sudo a2enmod rewrite",
+    require => Service["apache2"],
+  }
+  file { 'html/index.php':
+    ensure => present,
+    content => "<?php\nphpinfo();\n",
+    path => '/var/www/html/index.php',
+    require => Package['apache2'],
+    mode => 0644,
+    owner => 'www-data',
+    group => 'www-data',
   }
 }
 

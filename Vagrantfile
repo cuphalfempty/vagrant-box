@@ -70,4 +70,6 @@ Vagrant.configure(2) do |config|
     sudo apt-get install -y puppet
   SHELL
   config.vm.provision "puppet"
+  config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
+  config.vm.provision "file", source: "~/.vimrc", destination: ".vimrc"
 end

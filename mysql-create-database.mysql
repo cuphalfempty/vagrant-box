@@ -1,0 +1,2 @@
+CREATE DATABASE my_db;
+GRANT ALL ON my_db.* TO my_user@localhost IDENTIFIED BY 'my_user';
