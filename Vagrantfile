@@ -12,17 +12,17 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "kaorimatz/debian-8.6-amd64"
+  config.vm.box = "puppetlabs/debian-8.2-64-puppet"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
-  config.vm.box_check_update = true
+  # config.vm.box_check_update = false
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
-  #config.vm.network "forwarded_port", guest: 80, host: 8080 # http
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -38,7 +38,8 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "./www/html", "/var/www/html", owner: "www-data", group: "www-data"
+  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "../build", "/var/www/html", owner: "www-data", group: "www-data"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -67,9 +68,21 @@ Vagrant.configure(2) do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
     sudo apt-get update
-    sudo apt-get install -y puppet
+    sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password root'
+    sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password_again password root'
+    sudo apt-get install -y mysql-server-5.5 mysql-client-5.5
+    sudo service mysql start
+    mysql -uroot -proot -e "create database if not exists project_db"
+    mysql -uproject_user -pproject_user project_db -e "show tables" > /dev/null || mysql -uroot -proot -e "grant all on project_db.* to project_user@localhost identified by 'project_user'"
+    echo -e "[client]\nuser=root\npassword=root\n" > /home/vagrant/.my.cnf
+    sudo apt-get install -y php5 php5-cli php5-mysql php5-curl
+    sudo apt-get install -y apache2 libapache2-mod-php5
+    sudo cp /vagrant/files/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/
+    sudo a2ensite 000-default
+    sudo service apache2 restart
+    sudo apt-get install -y vim
+    sudo apt-get install -y tree
   SHELL
-  config.vm.provision "puppet"
   config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
   config.vm.provision "file", source: "~/.vimrc", destination: ".vimrc"
 end
