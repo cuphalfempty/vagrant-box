@@ -66,6 +66,10 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
+  config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
+  config.vm.provision "file", source: "~/.vimrc", destination: ".vimrc"
+  # http://stackoverflow.com/questions/30075461/how-do-i-add-my-own-public-key-to-vagrant-vm
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: ".ssh/me.pub"
   config.vm.provision "shell", inline: <<-SHELL
     sudo apt-get update
     sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password root'
@@ -82,7 +86,7 @@ Vagrant.configure(2) do |config|
     sudo service apache2 restart
     sudo apt-get install -y vim
     sudo apt-get install -y tree
+    sudo apt-get install -y git
+    sudo cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys
   SHELL
-  config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
-  config.vm.provision "file", source: "~/.vimrc", destination: ".vimrc"
 end
