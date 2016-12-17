@@ -77,8 +77,11 @@ Vagrant.configure(2) do |config|
     sudo apt-get install -y mysql-server-5.5 mysql-client-5.5
     sudo service mysql start
     mysql -uroot -proot -e "create database if not exists project_db"
-    mysql -uproject_user -pproject_user project_db -e "show tables" > /dev/null || mysql -uroot -proot -e "grant all on project_db.* to project_user@localhost identified by 'project_user'"
+    mysql -uproject_user -pproject_user project_db -e "show tables" > /dev/null || mysql -uroot -proot -e "grant all on project_db.* to vagrant@localhost identified by 'vagrant'"
     echo -e "[client]\nuser=root\npassword=root\n" > /home/vagrant/.my.cnf
+    sudo apt-get install postgresql-9.4 postgresql-client-9.4
+    sudo -u postgres psql -c "CREATE USER vagrant WITH PASSWORD 'vagrant';"
+    sudo -u postgres createdb -O vagrant project_db
     sudo apt-get install -y php5 php5-cli php5-mysql php5-curl
     sudo apt-get install -y apache2 libapache2-mod-php5
     sudo cp /vagrant/files/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/
