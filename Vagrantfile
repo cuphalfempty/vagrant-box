@@ -17,7 +17,7 @@ Vagrant.configure(2) do |config|
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
-  # config.vm.box_check_update = false
+  config.vm.box_check_update = false
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -93,4 +93,12 @@ Vagrant.configure(2) do |config|
     sudo apt-get install -y git tree vim
     sudo cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys
   SHELL
+
+  # multi-box config
+  config.vm.define "php5", primary: true do |php5|
+  end
+  config.vm.define "php7", autostart: false do |php7|
+    php7.vm.box = "kaorimatz/ubuntu-16.04-amd64"
+    php7.vm.network "private_network", ip: "192.168.33.20"
+  end
 end
