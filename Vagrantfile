@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "puppetlabs/debian-8.2-64-puppet"
+  config.vm.box = "bento/debian-8.6"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -87,7 +87,6 @@ Vagrant.configure(2) do |config|
     php5.vm.provision "shell", path: "scripts/provision/debian-8-php5.sh"
   end
   config.vm.define "php7", autostart: false do |php7|
-    php7.vm.box = "bento/debian-8.6"
     php7.vm.network "private_network", ip: "192.168.33.20"
     php7.vm.provision "shell", path: "scripts/provision/debian-8-php7.sh"
   end
