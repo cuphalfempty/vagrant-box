@@ -94,6 +94,15 @@ Vagrant.configure(2) do |config|
     sudo cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys
   SHELL
 
+  # Fixes issues when box fails on initiating network:
+  # ==> php7: Configuring and enabling network interfaces...
+  # or
+  #     php7: SSH auth method: private key
+  # http://askubuntu.com/questions/760871/network-settings-fail-for-ubuntu-xenial64-vagrant-box
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ['modifyvm', :id, '--cableconnected1', 'on']
+  end
+
   # multi-box config
   config.vm.define "php5", primary: true do |php5|
   end
