@@ -21,9 +21,10 @@ grep -e packages\.dotdeb\.org /etc/apt/sources.list > /dev/null \
        && wget --quiet https://www.dotdeb.org/dotdeb.gpg \
        && sudo apt-key add dotdeb.gpg \
        && sudo apt-get update
-sudo apt-get install -y php7.0 php7.0-cli php7.0-mysql php7.0-pgsql php7.0-curl \
-       php7.0-gd php7.0-apcu php7.0-xml
-sudo phpenmod apcu gd dom simplexml xml
+sudo apt-get install -y php7.0-cli php7.0-mysql php7.0-pgsql php7.0-curl
+# php for Drupal 8
+sudo apt-get install -y php7.0-apcu php7.0-gd php7.0-mbstring php7.0-xml php7.0-zip \
+       && sudo phpenmod apcu dom gd mbstring simplexml xml zip
 grep apc.rfc1867 /etc/php/7.0/apache2/php.ini &> /dev/null \
 	|| sudo sh -c "echo '\n;APC configuration\napc.rfc1867 = 1' >> /etc/php/7.0/apache2/php.ini"
 
