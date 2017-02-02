@@ -68,12 +68,10 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
-  config.vm.provision "file", source: "~/.vimrc", destination: ".vimrc"
-  # http://stackoverflow.com/questions/30075461/how-do-i-add-my-own-public-key-to-vagrant-vm
-  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: ".ssh/me.pub"
-  config.vm.provision "shell", inline: "sudo apt-get update"
-  config.vm.provision "shell", path: "scripts/provision/common.sh"
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yml"
+    ansible.tags = ["common"]
+  end
 
   # Fixes issues when box fails on initiating network:
   # ==> php7: Configuring and enabling network interfaces...

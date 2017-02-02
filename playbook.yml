@@ -1,0 +1,67 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  remote_user: root
+  tasks:
+
+    - name: Copy ssh public key
+      authorized_key:
+        user: vagrant
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      tags: common
+
+    # some packages use locales i.e. PostgreSQL
+    - name: Ensure a GB locale exists
+      locale_gen:
+        name: en_GB.UTF-8
+        state: present
+      tags: common
+
+    - name: Ensure a PL locale exists
+      locale_gen:
+        name: pl_PL.UTF-8
+        state: present
+      tags: common
+
+    - name: Update repositories
+      apt:
+        update_cache: yes
+      tags: common
+
+    - name: Install "ack-grep" package
+      apt:
+        name: ack-grep
+      tags: common
+
+    - name: Install "git" package
+      apt:
+        name: git
+      tags: common
+
+    - name: Copy ".gitconfig"
+      copy:
+        src: ~/.gitconfig
+        dest: /home/vagrant/.gitconfig
+        owner: vagrant
+        group: vagrant
+      tags: common
+
+    - name: Install "tree" package
+      apt:
+        name: tree
+      tags: common
+
+    - name: Install "vim" package
+      apt:
+        name: vim
+      tags: common
+
+    - name: Copy ".vimrc"
+      copy:
+        src: ~/.vimrc
+        dest: /home/vagrant/.vimrc
+        owner: vagrant
+        group: vagrant
+      tags: common
